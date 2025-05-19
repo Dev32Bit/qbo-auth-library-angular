@@ -1,0 +1,10 @@
+<div *ngIf="!isConnected">
+  <p>Connect your QBO account</p>
+  <button (click)="connectToQbo()">Connect to QBO</button>
+</div>
+
+<div *ngIf="isConnected">
+  <p>Connected to QBO:</p>
+  <pre>{{ qboDetails | json }}</pre>
+  <button (click)="disconnectQbo()">Disconnect</button>
+</div>
