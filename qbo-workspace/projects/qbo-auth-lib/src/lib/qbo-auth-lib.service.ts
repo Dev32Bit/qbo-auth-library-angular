@@ -27,12 +27,9 @@ export class QboAuthService {
 
   /** STEP 1: kick off OAuth by POST-ing to /auth/initiate */
   initiateAuth(): Observable<string> {
-    const headers = new HttpHeaders({
-      'ngrok-skip-browser-warning': 'true' // for ngrok dev
-    });
 
     return this.http
-      .get<{ url: string }>(`${this.config.apiBase}/api/connect/qbo`, { headers })
+      .get<{ url: string }>(`${this.config.apiBase}/api/connect/qbo`)
       .pipe(map(res => res.url));
   }
 

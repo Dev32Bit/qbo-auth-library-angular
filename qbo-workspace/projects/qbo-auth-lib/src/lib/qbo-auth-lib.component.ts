@@ -12,24 +12,24 @@ export class QboAuthComponent implements OnInit {
   @Input() clientSecret = '';                          // ← new
   @Input() callBackURL = '';                           // ← renamed from callbackURL
   @Input() unifiedApiEndpoint = '';                    // your API base
-  @Input() environment:any = 'sandbox';
+  @Input() environment: any = 'sandbox';
   @Input() scope = '';
 
   errorMessage = '';
   isConnected = false;
   qboDetails: any;
 
-  constructor(private qboService: QboAuthService) {}
+  constructor(private qboService: QboAuthService) { }
 
   ngOnInit(): void {
     // 1️⃣ configure the service once
     const cfg: QboConfig = {
-      apiBase:      this.unifiedApiEndpoint,
-      clientId:     this.clientId,
+      apiBase: this.unifiedApiEndpoint,
+      clientId: this.clientId,
       clientSecret: this.clientSecret,
-      redirectUri:  this.callBackURL,
-      environment:  this.environment,
-      scope:        this.scope
+      redirectUri: this.callBackURL,
+      environment: this.environment,
+      scope: this.scope
     };
     this.qboService.setConfig(cfg);
 
@@ -50,10 +50,17 @@ export class QboAuthComponent implements OnInit {
 
   connectToQbo() {
     this.qboService.initiateAuth().subscribe({
-      next: (url) => window.location.href = url,
-      error: (err) => (this.errorMessage = err.message)
+      next: (url) => {
+        console.log('Received URL:', url); // ✅ log the URL
+        window.location.href = url;
+      },
+      error: (err) => {
+        console.error('Error during QBO auth:', err); // ✅ log the error
+        this.errorMessage = err.message;
+      }
     });
   }
+
 
   disconnectQbo() {
     const token = this.qboDetails?.accessToken;
