@@ -5,6 +5,8 @@
     "outDir": "../../out-tsc/lib",
     "declaration": true,
     "declarationMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "inlineSources": true,
     "types": []
   },

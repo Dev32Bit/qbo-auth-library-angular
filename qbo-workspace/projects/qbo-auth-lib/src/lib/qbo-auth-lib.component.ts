@@ -1,40 +1,73 @@
+// qbo-auth-lib.component.ts
 import { Component, Input, OnInit } from '@angular/core';
-import { QboAuthService } from './qbo-auth-lib.service';
+import { QboAuthService, QboConfig } from './qbo-auth-lib.service';
 
 @Component({
   selector: 'auth',
   templateUrl: './qbo-auth-lib.component.html',
-  styleUrls: ['./qbo-auth-lib.component.scss'],
-  standalone: false
+  styleUrls: ['./qbo-auth-lib.component.scss']
 })
 export class QboAuthComponent implements OnInit {
-  @Input() clientId!: string;
-  @Input() clientSecret!: string;
-  @Input() callBackURL!: string;
-  @Input() unifiedApiEndpoint!: string;
+  @Input() clientId = '';
+  @Input() clientSecret = '';                          // ← new
+  @Input() callBackURL = '';                           // ← renamed from callbackURL
+  @Input() unifiedApiEndpoint = '';                    // your API base
+  @Input() environment:any = 'sandbox';
+  @Input() scope = '';
 
+  errorMessage = '';
   isConnected = false;
   qboDetails: any;
 
-  constructor(private qboService: QboAuthService) { }
+  constructor(private qboService: QboAuthService) {}
 
   ngOnInit(): void {
-    this.qboService.handleCallback(this.callBackURL).subscribe((res) => {
-      this.qboDetails = res;
-      this.isConnected = true;
-    });
+    // 1️⃣ configure the service once
+    const cfg: QboConfig = {
+      apiBase:      this.unifiedApiEndpoint,
+      clientId:     this.clientId,
+      clientSecret: this.clientSecret,
+      redirectUri:  this.callBackURL,
+      environment:  this.environment,
+      scope:        this.scope
+    };
+    this.qboService.setConfig(cfg);
+
+    // 2️⃣ if Intuit redirected back with ?code=…
+    if (window.location.search.includes('code=')) {
+      this.qboService.handleCallback().subscribe({
+        next: (res) => {
+          // your controller returns { isConnected: true, tokens }
+          this.qboDetails = res.tokens ?? res;
+          this.isConnected = true;
+        },
+        error: (err) => {
+          this.errorMessage = err.message || 'Failed to connect to QBO';
+        }
+      });
+    }
   }
 
   connectToQbo() {
-    this.qboService.getAuthUrl(this.clientId, this.callBackURL).subscribe((url: string) => {
-      window.location.href = url;
+    this.qboService.initiateAuth().subscribe({
+      next: (url) => window.location.href = url,
+      error: (err) => (this.errorMessage = err.message)
     });
   }
 
   disconnectQbo() {
-    this.qboService.disconnect().subscribe(() => {
-      this.qboDetails = null;
-      this.isConnected = false;
+    const token = this.qboDetails?.accessToken;
+    if (!token) {
+      this.errorMessage = 'No access token available to disconnect';
+      return;
+    }
+
+    this.qboService.disconnect(token).subscribe({
+      next: () => {
+        this.qboDetails = null;
+        this.isConnected = false;
+      },
+      error: (err) => (this.errorMessage = err.message)
     });
   }
 }

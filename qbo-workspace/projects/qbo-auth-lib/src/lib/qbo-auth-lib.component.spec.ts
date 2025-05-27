@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QboAuthLibComponent } from './qbo-auth-lib.component';
+import { QboAuthComponent } from './qbo-auth-lib.component';
 
 describe('QboAuthLibComponent', () => {
-  let component: QboAuthLibComponent;
-  let fixture: ComponentFixture<QboAuthLibComponent>;
+  let component: QboAuthComponent;
+  let fixture: ComponentFixture<QboAuthComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ QboAuthLibComponent ]
+      declarations: [ QboAuthComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(QboAuthLibComponent);
+    fixture = TestBed.createComponent(QboAuthComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

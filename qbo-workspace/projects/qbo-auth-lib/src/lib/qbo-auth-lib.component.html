@@ -8,3 +8,7 @@
   <pre>{{ qboDetails | json }}</pre>
   <button (click)="disconnectQbo()">Disconnect</button>
 </div>
+
+<div *ngIf="errorMessage" class="error">
+  {{ errorMessage }}
+</div>

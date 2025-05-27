@@ -1,16 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { QboAuthComponent } from './qbo-auth-lib.component';
-
 @NgModule({
-  declarations: [
-    QboAuthComponent
-  ],
+  declarations: [QboAuthComponent],
   imports: [
-    CommonModule  // ONLY modules here
+    CommonModule,
+    HttpClientModule,
   ],
-  exports: [
-    QboAuthComponent
-  ]
+  exports: [QboAuthComponent]
 })
-export class QboAuthLibModule {}
+export class QboAuthLibModule { }

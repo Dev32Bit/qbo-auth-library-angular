@@ -13,6 +13,7 @@
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "project": "projects/qbo-auth-lib/ng-package.json"
+            
           },
           "configurations": {
             "production": {
